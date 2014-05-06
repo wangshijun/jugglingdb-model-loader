@@ -1,5 +1,5 @@
 {
-  "name": "jugglingdb-model-loader",
+  "name": "promised-jugglingdb-model-loader",
   "version": "0.0.3",
   "author": {
     "name": "Brandon Papworth",
@@ -21,22 +21,10 @@
     "loader"
   ],
   "dependencies": {
-    "jugglingdb": "~0.2.0-41"
+    "promised-jugglingdb": "~0.2.15"
   },
   "license": "MIT",
   "engines": {
     "node": ">=0.10"
-  },
-  "readme": "jugglingdb-model-loader\n=======================\n\nAn extended JugglingDB Schema class to help with loading model definitions from separate files.\n\n## Usage\n### Example directory structure\n```\nindex.js\nmodel-definition /\n\tuser.js\n\tuser /\n\t\tprofile.js\nderpy-models /\n\therp.js\n\therp /\n\t\tderp.js\n\tfoo /\n\t\tbar /\n\t\t\tbaz.js\n```\n### JavaScript\n-\n#### index.js\n```javascript\nvar SchemaWithLoader = require('jugglingdb-model-loader');\n\nvar schema = new SchemaWithLoader('redis',{\n\tport        : 6379,\n\t//settings to pass to loader\n\tmodelLoader : {\n\t\t// [optional]\n\t\t// [default] = require.main.filename\n\t\t// Will set the base directory that\n\t\t// relative \"directory\" properties are resolved\n\t\t// from.\n\t\trootDirectory : '.',\n\n\t\t// [optional]\n\t\t// [default] = 'model-definition'\n\t\t// Will set the directory (or directories)\n\t\t// that should be searched for model\n\t\t// definitions.\n\t\tdirectory     : 'model-definition'\n\n\t\t// For multiple directories...\n\t\tdirectory     : [\n\t\t\t'model-definition',\n\t\t\t'derpy-modules'\n\t\t]\n\t}\n});\n\n\n// Resolves to user.js\n// is found in model-definition, meaning final path\n// relative to rootDirectory is\n// \"model-definition/user.js\"\nvar User = schema.loadDefinition('User');\n\n// Resolves to user/profile.js\n// is found in model-definition, meaning final path\n// relative to rootDirectory is\n// \"model-definition/user/profile.js\"\nvar UserProfile = schema.loadDefinition('UserProfile');\n\n// Resolves to herp/derp.js\n// is found in derpy-models, meaning final path\n// relative to rootDirectory is\n// \"derpy-models/herp/derp.js\"\nvar Herp = schema.loadDefinition('Herp');\n\n// Resolves to herp/derp.js\n// is found in derpy-models, meaning final path\n// relative to rootDirectory is\n// \"derpy-models/herp/derp.js\"\nvar HerpDerp = schema.loadDefinition('HerpDerp');\n\n// Resolves to foo/bar/baz.js\n// is found in derpy-models, meaning final path\n// relative to rootDirectory is\n// \"derpy-models/foo/bar/baz.js\"\nvar FooBarBaz = schema.loadDefinition('FooBarBaz');\n```\n\nNames should be camel-cased, as that defines the directory structure that the loader will be searching through.\n\n## Definition File\n### Format\n\nThe ```module.exports``` property needs to be a function that accepts one argument. This argument will be a reference to the ```SchemaWithLoader``` instance that called ```loadDefinition()```.\n\n\n## Example Definition Files\n#### user.js\n\n```javascript\nmodule.exports = function (schema) {\n\tvar User = schema.define('User',{\n\t\tname  : String,\n\t\temail : String\n\t});\n\n\treturn User;\n};\n```\n\n#### user/profile.js\n\nIn this file, a ```UserProfile``` belongs to just one user, which means that a call to ```UserProfile.belongsTo``` is required. Since ```schema``` is an instance of ```SchemaWithLoader```, you can call ```loadDefinition('User')``` to load the ```User``` definition if it hasn't been and return it. If ```User``` has already been loaded previously, it will be returned without executing another definition loading operation.\n\n```javascript\nvar Schema = require('jugglingdb').Schema;\n\nmodule.exports = function (schema) {\n\tvar UserProfile = schema.define('UserProfile',{\n\t\tbio : Schema.Text\n\t});\n\tUserProfile.belongsTo(schema.loadDefinition('User'),{\n\t\tas         : 'profile',\n\t\tforeignKey : 'userId'\n\t});\n\treturn UserProfile;\n};\n```\n\n***TODO*** formal documentation of method calls.\n",
-  "readmeFilename": "README.md",
-  "bugs": {
-    "url": "https://github.com/wangshijun/jugglingdb-model-loader/issues"
-  },
-  "homepage": "https://github.com/wangshijun/jugglingdb-model-loader",
-  "_id": "jugglingdb-model-loader@0.0.3",
-  "dist": {
-    "shasum": "74509f17e609081d9e31f9293aec00d17b1f9add"
-  },
-  "_from": "jugglingdb-model-loader@",
-  "_resolved": "https://registry.npmjs.org/jugglingdb-model-loader/-/jugglingdb-model-loader-0.0.3.tgz"
+  }
 }

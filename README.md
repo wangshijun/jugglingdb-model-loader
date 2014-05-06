@@ -1,4 +1,4 @@
-jugglingdb-model-loader
+promised-jugglingdb-model-loader
 =======================
 
 An extended JugglingDB Schema class to help with loading model definitions from separate files.
@@ -8,47 +8,47 @@ An extended JugglingDB Schema class to help with loading model definitions from 
 ```
 index.js
 model-definition /
-	user.js
-	user /
-		profile.js
+    user.js
+    user /
+        profile.js
 derpy-models /
-	herp.js
-	herp /
-		derp.js
-	foo /
-		bar /
-			baz.js
+    herp.js
+    herp /
+        derp.js
+    foo /
+        bar /
+            baz.js
 ```
 ### JavaScript
 -
 #### index.js
 ```javascript
-var SchemaWithLoader = require('jugglingdb-model-loader');
+var SchemaWithLoader = require('promised-jugglingdb-model-loader');
 
 var schema = new SchemaWithLoader('redis',{
-	port        : 6379,
-	//settings to pass to loader
-	modelLoader : {
-		// [optional]
-		// [default] = require.main.filename
-		// Will set the base directory that
-		// relative "directory" properties are resolved
-		// from.
-		rootDirectory : '.',
+    port        : 6379,
+    //settings to pass to loader
+    modelLoader : {
+        // [optional]
+        // [default] = require.main.filename
+        // Will set the base directory that
+        // relative "directory" properties are resolved
+        // from.
+        rootDirectory : '.',
 
-		// [optional]
-		// [default] = 'model-definition'
-		// Will set the directory (or directories)
-		// that should be searched for model
-		// definitions.
-		directory     : 'model-definition'
+        // [optional]
+        // [default] = 'model-definition'
+        // Will set the directory (or directories)
+        // that should be searched for model
+        // definitions.
+        directory     : 'model-definition'
 
-		// For multiple directories...
-		directory     : [
-			'model-definition',
-			'derpy-modules'
-		]
-	}
+        // For multiple directories...
+        directory     : [
+            'model-definition',
+            'derpy-modules'
+        ]
+    }
 });
 
 
@@ -96,12 +96,12 @@ The ```module.exports``` property needs to be a function that accepts one argume
 
 ```javascript
 module.exports = function (schema) {
-	var User = schema.define('User',{
-		name  : String,
-		email : String
-	});
+    var User = schema.define('User',{
+        name  : String,
+        email : String
+    });
 
-	return User;
+    return User;
 };
 ```
 
@@ -110,17 +110,17 @@ module.exports = function (schema) {
 In this file, a ```UserProfile``` belongs to just one user, which means that a call to ```UserProfile.belongsTo``` is required. Since ```schema``` is an instance of ```SchemaWithLoader```, you can call ```loadDefinition('User')``` to load the ```User``` definition if it hasn't been and return it. If ```User``` has already been loaded previously, it will be returned without executing another definition loading operation.
 
 ```javascript
-var Schema = require('jugglingdb').Schema;
+var Schema = require('promised-jugglingdb').Schema;
 
 module.exports = function (schema) {
-	var UserProfile = schema.define('UserProfile',{
-		bio : Schema.Text
-	});
-	UserProfile.belongsTo(schema.loadDefinition('User'),{
-		as         : 'profile',
-		foreignKey : 'userId'
-	});
-	return UserProfile;
+    var UserProfile = schema.define('UserProfile',{
+        bio : Schema.Text
+    });
+    UserProfile.belongsTo(schema.loadDefinition('User'),{
+        as         : 'profile',
+        foreignKey : 'userId'
+    });
+    return UserProfile;
 };
 ```
 

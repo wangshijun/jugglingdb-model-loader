@@ -1,4 +1,4 @@
-var JugglingDB = require('jugglingdb');
+var JugglingDB = require('promised-jugglingdb');
 
 JugglingDB.Schema.extend = require('../../lib/mixin/extend.fn.js');
 
